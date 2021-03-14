@@ -1,48 +1,10 @@
-# LMDS Stack
+# LMDS Stack 
 
 <b>Linux Media Delivery System Stack based on Docker for Raspberry Pi</b>
-
-## About
-
-Project goal is to simplify LMDS deployment and maintenance on Raspberry Pi.
-This repository will allow you to dynamically choose needed containers and automate their deployment.
-
-<b>What is currently a part of the LMDS Stack:</b>
-
-<ul>
-  <li>Portainer - GUI Docker Manager :9000</li>
-  <li> Sonarr : 8989</li>
-  <li> Radarr : 7878</li>
-  <li> Lidarr : 8686</li>
-  <li> Bazarr : 6767</li>
-  <li> Jackett : 9117</li>
-  <li> Deluge - Torrent Client : 8112</li>
-  <li> qBittorrent - Torrent Client : 15080</li>
-  <li> Transmission - Torrent Client : 9091</li>
-  <li> NZBGet - Usenet groups client : 6789</li>
-  <li> SABnzbd - Usenet groups client : 8080</li>
-  <li> JellyFin - Media manager OpenSource : <b>8096</b></li>
-  <li> Emby - Media manager like Plex : <b>8096</b></li>
-  <li> Plex - Media manager : 32400/web</li>
-  <li> EmbyStat - Statistics for Emby : 6555</li>
-  <li> TVheadend - TV streaming server : 9981 </li>
-  <li> Ngnix - Web Server - for future use clear instance for now: 80</li>
-  <li> Pi-Hole - Private DNS sinkhole : 8089 <b>WebPass: <i>greenfrog</i></b></li>
-  </ul>
-<br>
-<i>Numbers after ":" identify a port that particular container will respond on, i.e. Portainer default port is :9000, point your browser it to your server IP adding :9000 at the end i.e. http://192.168.100.100:9000 you will see Portainer login page.</i>
+Originally @GreenFrogSB, then modified using the lessons learned while deploying it on the Raspberry Pi 4 8GB
 
 
-### Raspberry Pi LMDS Server Docker Edition
-YouTube: https://youtu.be/oLxsSQIqOMw
-
-### GreenFrog Small Blog
-Blog link: http://greenfrognest.com/lmdsondocker.php
-
-## How to Use it?
-<b>Before you start using LMDS, set your Raspberry Pi IP address to be static, it will make some things easier later on.
-Static IP address is not absolutely necessary just to try the project and find out if you like it, but i.e. if you would like to properly utilize pihole in your network - you will have to point your router to your RPi IP for DNS resolution.</b>
-
+## My own deploy strategy
 - install git using a command:
 <pre><code>sudo apt-get install git</code></pre>
 
@@ -54,7 +16,19 @@ Static IP address is not absolutely necessary just to try the project and find o
 - Enter the directory and run:
 
 <pre><code>cd ~/LMDS</code></pre>
-<pre><code>./deploy.sh</code></pre>
+
+<ul>
+<li> Use the <code>./deploy.sh</code> script to install docker.</li>
+<li> Use the <code>./deploy.sh</code> to create stack.
+</li><li> Copy <code>docker-compose_paprikodlak.yml</code> to <code>docker-compose.yml</code>. Check <code>id pi</code> for uid a gid.
+</li><li> Run <code>docker-compose up -d</code>, let it bring it up and then <code>docker-compose down</code>.
+</li><li> Use <code>sudo chown -R pi:pi volumes</code> to fix permissions.
+</li><li> Fix the problem with <code>dhcpcd</code> dying after boot by putting <code>denyinterfaces veth*</code> to he beginning of <code>/etc/dhcpcd.conf</code>, as stated [here](https://www.raspberrypi.org/forums/viewtopic.php?t=275497). 
+</li><li>Put <code>jdownloader-block.txt</code> into the download folder, run it manually using <code>docker exec -it jdownloader sh</code>, run jdownloader using <code>java -jar JDownloader.jar -norestart</code> and set it up. Then delete the <code>.txt</code> file.
+</li><li>Set up the PIA openVPN: to download the OpenVPN configuration files and certs is: https://(www.privateinternetaccess.com/openvpn/openvpn-nextgen.zip), once you have downloaded the zip (normally a zip as they contain multiple ovpn files) then extract it to /config/openvpn/ folder (if that folder doesn't exist then start and stop the docker container to force the creation of the folder). If there are multiple ovpn files then please delete the ones you don't want to use (normally filename follows location of the endpoint) leaving just a single ovpn file and the certificates referenced in the ovpn file (certificates will normally have a crt and/or pem extension).
+</li><li> To fix the problem with Bazarr on RPi 4, run <code>wget http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb</code>, <code>sudo dpkg -i libseccomp2_2.5.1-1_armhf.deb</code>
+</li><li> For the services interlinking, use the IPV4 IPAM Gateway IP of the bridge. In Heimdall, use external RPi IP adress or its assigned domain name.
+</li></ul>
 
 ## Menu
 
