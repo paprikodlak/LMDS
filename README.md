@@ -4,7 +4,11 @@
 Originally <a href="https://github.com/GreenFrogSB/">GreenFrogSB</a>, then modified using the lessons learned while deploying it on the Raspberry Pi 4 8GB
 
 
+## Todo
+Set up volumes such as https://trash-guides.info/Misc/how-to-set-up-hardlinks-and-atomic-moves/#docker.
+
 ## My own deploy strategy
+
 - install git using a command:
 <pre><code>sudo apt-get install git</code></pre>
 
