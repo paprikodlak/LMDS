@@ -1,7 +1,7 @@
 # LMDS Stack 
 
 <b>Linux Media Delivery System Stack based on Docker for Raspberry Pi</b>
-Originally @GreenFrogSB, then modified using the lessons learned while deploying it on the Raspberry Pi 4 8GB
+Originally <a href="https://github.com/GreenFrogSB/">GreenFrogSB</a>, then modified using the lessons learned while deploying it on the Raspberry Pi 4 8GB
 
 
 ## My own deploy strategy
@@ -23,9 +23,9 @@ Originally @GreenFrogSB, then modified using the lessons learned while deploying
 </li><li> Copy <code>docker-compose_paprikodlak.yml</code> to <code>docker-compose.yml</code>. Check <code>id pi</code> for uid a gid.
 </li><li> Run <code>docker-compose up -d</code>, let it bring it up and then <code>docker-compose down</code>.
 </li><li> Use <code>sudo chown -R pi:pi volumes</code> to fix permissions.
-</li><li> Fix the problem with <code>dhcpcd</code> dying after boot by putting <code>denyinterfaces veth*</code> to he beginning of <code>/etc/dhcpcd.conf</code>, as stated [here](https://www.raspberrypi.org/forums/viewtopic.php?t=275497). 
+</li><li> Fix the problem with <code>dhcpcd</code> dying after boot by putting <code>denyinterfaces veth*</code> to he beginning of <code>/etc/dhcpcd.conf</code>, as stated <a href="https://www.raspberrypi.org/forums/viewtopic.php?t=275497">here</a>. 
 </li><li>Put <code>jdownloader-block.txt</code> into the download folder, run it manually using <code>docker exec -it jdownloader sh</code>, run jdownloader using <code>java -jar JDownloader.jar -norestart</code> and set it up. Then delete the <code>.txt</code> file.
-</li><li>Set up the PIA openVPN: to download the OpenVPN configuration files and certs is: https://(www.privateinternetaccess.com/openvpn/openvpn-nextgen.zip), once you have downloaded the zip (normally a zip as they contain multiple ovpn files) then extract it to /config/openvpn/ folder (if that folder doesn't exist then start and stop the docker container to force the creation of the folder). If there are multiple ovpn files then please delete the ones you don't want to use (normally filename follows location of the endpoint) leaving just a single ovpn file and the certificates referenced in the ovpn file (certificates will normally have a crt and/or pem extension).
+</li><li>Set up the PIA openVPN: to download the OpenVPN configuration files and certs is: https://www.privateinternetaccess.com/openvpn/openvpn-nextgen.zip, once you have downloaded the zip (normally a zip as they contain multiple ovpn files) then extract it to /config/openvpn/ folder (if that folder doesn't exist then start and stop the docker container to force the creation of the folder). If there are multiple ovpn files then please delete the ones you don't want to use (normally filename follows location of the endpoint) leaving just a single ovpn file and the certificates referenced in the ovpn file (certificates will normally have a crt and/or pem extension).
 </li><li> To fix the problem with Bazarr on RPi 4, run <code>wget http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb</code>, <code>sudo dpkg -i libseccomp2_2.5.1-1_armhf.deb</code>
 </li><li> For the services interlinking, use the IPV4 IPAM Gateway IP of the bridge. In Heimdall, use external RPi IP adress or its assigned domain name.
 </li></ul>
