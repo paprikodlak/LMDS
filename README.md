@@ -5,7 +5,7 @@ Originally <a href="https://github.com/GreenFrogSB/">GreenFrogSB</a>, then modif
 
 
 ## Todo
-Set up volumes such as https://trash-guides.info/Misc/how-to-set-up-hardlinks-and-atomic-moves/#docker.
+Set up volumes such as https://wiki.servarr.com/Docker_Guide, https://trash-guides.info/Misc/how-to-set-up-hardlinks-and-atomic-moves/#docker.
 
 ## My own deploy strategy
 
