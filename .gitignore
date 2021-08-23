@@ -10,7 +10,6 @@
 /TVseries/
 /TransmissionWathFolder/
 /TVrecordings/
-docker-compose.yml
 .outofdate
 downloads
 .env

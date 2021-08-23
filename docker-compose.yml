@@ -1,0 +1,149 @@
+version: '2'
+services:
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${ROOT}/volumes/portainer/data:/data
+
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/volumes/sonarr/data:/config
+      - ${DIR}:/data
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  radarr:
+    image: linuxserver/radarr:5.14
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/volumes/radarr/config:/config
+      - ${DIR}:/data
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  jackett:
+    image: linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - AUTO_UPDATE=true #optional
+      # - RUN_OPTS=<run options here> #optional
+    volumes:
+      - ${ROOT}/volumes/jackett/config:/config
+      - ${DIR}:/data
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+
+  plex:
+    image: ghcr.io/linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - VERSION=docker
+      # - PLEX_CLAIM= #optional
+    volumes:
+      - ${ROOT}/volumes/plex/library:/config
+      - ${DIR}:/data
+    restart: unless-stopped
+
+  deluge:
+    restart: always
+    image: doggosrocko/arch-delugevpn-armhf
+    container_name: deluge
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8112:8112
+      - 8118:8118
+      - 58846:58846
+      - 58945:58946
+    volumes:
+      - ${ROOT}/volumes/deluge/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - ${DIR}:/data
+    environment:
+      - VPN_ENABLED=yes
+      - VPN_USER=${PIAU}
+      - VPN_PASS=${PIAP}
+      - VPN_PROV=pia
+      - VPN_CLIENT=openvpn
+      - STRICT_PORT_FORWARD=yes
+      - ENABLE_PRIVOXY=yes
+      - LAN_NETWORK=192.168.1.0/24
+      - NAME_SERVERS=209.222.18.222,84.200.69.80,37.235.1.174,1.1.1.1,209.222.18.218,37.235.1.177,84.200.70.40,1.0.0.1
+      - DELUGE_DAEMON_LOG_LEVEL=info
+      - DELUGE_WEB_LOG_LEVEL=info
+      - VPN_INPUT_PORTS=1234
+      - VPN_OUTPUT_PORTS=5678
+      - DEBUG=false
+      - PUID=${PUID}
+      - PGID=${PGID}
+
+  jdownloader:
+    image: jaymoulin/jdownloader
+    container_name: jdownloader
+    restart: unless-stopped
+    user: ${PGID}:${PUID}
+    volumes:
+        - /etc/localtime:/etc/localtime:ro #optional
+        - ${ROOT}/volumes/jdown/config:/opt/JDownloader/cfg
+        - ${ROOT}/volumes/jdown/logs:/opt/JDownloader/logs #optional
+        - ${DIR}:/data
+    environment: 
+        - MYJD_USER=${JDUSR}  #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+        - MYJD_PASSWORD=${JDPASS}  #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+        - MYJD_DEVICE_NAME=rpi4 #optional
+        - XDG_DOWNLOAD_DIR=/data/JDown #optional
+    ports:
+        - 3129:3129 
+
+  bazarr:
+    image: linuxserver/bazarr
+    container_name: bazarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/volumes/bazarr/config:/config
+      - ${DIR}:/data
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=Europe/London
+    volumes:
+      - ${ROOT}/volumes/heimdall/config:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
