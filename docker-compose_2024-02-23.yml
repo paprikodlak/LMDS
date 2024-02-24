@@ -235,6 +235,7 @@ services:
     restart: always
     privileged: true
     network_mode: host
+
   samba:
     image: dperson/samba:armhf
     container_name: samba
