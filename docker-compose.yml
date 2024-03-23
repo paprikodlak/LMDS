@@ -211,7 +211,8 @@ services:
     restart: unless-stopped
 
   homeassistant:
-    image: lscr.io/linuxserver/homeassistant
+    # image: lscr.io/linuxserver/homeassistant:latest
+    image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
     network_mode: host
     environment:
@@ -235,7 +236,6 @@ services:
     restart: always
     privileged: true
     network_mode: host
-
   samba:
     image: dperson/samba:armhf
     container_name: samba
@@ -256,7 +256,7 @@ services:
     tty: true
     volumes:
       - ${DIR}:/data:z
-    command: '-s "malina;/data;yes;no;yes;" -u "${SAMBAUSR};${SAMBAPASS}" -p' # malina should have access to anyone for anything
+    command: '-s "malina;/data;yes;no;yes;" -u "malina;malina" -p' # malina should have access to anyone for anything
    #command: '-s "usbhub;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd"'
 
   uptime-kuma:
